@@ -29,6 +29,8 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@iconify-json/token-branded": "^1.2.10",
+    "@iconify/tailwind": "^1.2.0",
     "@biomejs/biome": "1.9.4",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^20",

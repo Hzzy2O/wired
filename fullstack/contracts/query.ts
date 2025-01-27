@@ -1,30 +1,35 @@
 import { isValidSuiAddress } from "@mysten/sui/utils";
 import { suiClient } from "./index";
 import { SuiObjectResponse } from "@mysten/sui/client";
-import { categorizeSuiObjects, CategorizedObjects } from "@/utils/assetsHelpers";
+import {
+	categorizeSuiObjects,
+	CategorizedObjects,
+} from "@/utils/assetsHelpers";
 
-export const getUserProfile = async (address: string): Promise<CategorizedObjects> => {
-  if (!isValidSuiAddress(address)) {
-    throw new Error("Invalid Sui address");
-  }
+export const getUserProfile = async (
+	address: string,
+): Promise<CategorizedObjects> => {
+	if (!isValidSuiAddress(address)) {
+		throw new Error("Invalid Sui address");
+	}
 
-  let hasNextPage = true;
-  let nextCursor: string | null = null;
-  let allObjects: SuiObjectResponse[] = [];
+	let hasNextPage = true;
+	let nextCursor: string | null = null;
+	let allObjects: SuiObjectResponse[] = [];
 
-  while (hasNextPage) {
-    const response = await suiClient.getOwnedObjects({
-      owner: address,
-      options: {
-        showContent: true,
-      },
-      cursor: nextCursor,
-    });
+	while (hasNextPage) {
+		const response = await suiClient.getOwnedObjects({
+			owner: address,
+			options: {
+				showContent: true,
+			},
+			cursor: nextCursor,
+		});
 
-    allObjects = allObjects.concat(response.data);
-    hasNextPage = response.hasNextPage;
-    nextCursor = response.nextCursor ?? null;
-  }
+		allObjects = allObjects.concat(response.data);
+		hasNextPage = response.hasNextPage;
+		nextCursor = response.nextCursor ?? null;
+	}
 
-  return categorizeSuiObjects(allObjects);
+	return categorizeSuiObjects(allObjects);
 };
