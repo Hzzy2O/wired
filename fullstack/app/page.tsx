@@ -29,7 +29,6 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <header className="flex justify-between items-center p-4 bg-white shadow-md">
         <div className="flex items-center rounded-full overflow-hidden">
-          <Image src="/logo/logo.jpg" alt="Sui Logo" width={80} height={40} />
         </div>
         <ConnectButton />
       </header>

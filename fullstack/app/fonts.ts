@@ -1,18 +1,18 @@
 import localFont from "next/font/local";
-import { Inter } from "next/font/google";
-export const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
+import { Urbanist } from "next/font/google";
+export const rubikGlitch = localFont({
+  src: "./fonts/RubikGlitch-Regular.woff",
+  variable: "--font-rubik-glitch",
   weight: "100 900",
 });
 
-export const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+export const retro = localFont({
+  src: "./fonts/retro.woff2",
+  variable: "--font-retro",
   weight: "100 900",
 });
 
-export const inter = Inter({
+export const urban = Urbanist({
   subsets: ["latin"],    
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
