@@ -111,6 +111,8 @@ async function buildAndPublishPackage(
           }`;
 		fs.writeFileSync(`${basepath}/contracts_${env}.ts`, fileContent);
 		fs.writeFileSync(`${basepath}/contracts_base.ts`, baseContent);
+    execSync(`bunx biome format --write ${basepath}/contracts_${env}.ts`)
+    execSync(`bunx biome format --write ${basepath}/contracts_base.ts`)
 	} catch (error) {
 		console.error("Error:", error);
 	}

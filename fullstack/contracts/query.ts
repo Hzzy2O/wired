@@ -33,3 +33,15 @@ export const getUserProfile = async (
 
 	return categorizeSuiObjects(allObjects);
 };
+
+export const getSuiBalance = async (address: string): Promise<string> => {
+  if (!isValidSuiAddress(address)) {
+    throw new Error("Invalid Sui address");
+  }
+
+  const balance = await suiClient.getBalance({
+    owner: address,
+  });
+
+  return balance.totalBalance;
+};
