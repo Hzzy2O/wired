@@ -1,4 +1,4 @@
 export interface BaseContract {
 	package: string;
-	trading_poolAdmincap: string;
+	trade_coinAdmincap: string;
 }

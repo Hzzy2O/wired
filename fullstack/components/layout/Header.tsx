@@ -1,6 +1,6 @@
 import { ConnectButton } from "@/components/connect";
 import "./Header.css";
-import { NavBar } from "@/components/ui/navbar";
+import { NavBar } from "./Navbar";
 
 export default function Header() {
 	

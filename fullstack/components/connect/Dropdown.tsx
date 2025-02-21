@@ -58,10 +58,10 @@ export default function Dropdown({currentAccount}: DropdownProps) {
             <Copy size={16} strokeWidth={2} className="opacity-60" aria-hidden="true" />
             <span>Copy</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Layers2 size={16} strokeWidth={2} className="opacity-60" aria-hidden="true" />
-            <span>Profile</span>
-          </DropdownMenuItem>
+          {/* <DropdownMenuItem> */}
+          {/*   <Layers2 size={16} strokeWidth={2} className="opacity-60" aria-hidden="true" /> */}
+          {/*   <span>Profile</span> */}
+          {/* </DropdownMenuItem> */}
         </DropdownMenuGroup>
         {accounts.length > 0 && <DropdownMenuSeparator className='bg-neutral-700' />}
         <DropdownMenuGroup>

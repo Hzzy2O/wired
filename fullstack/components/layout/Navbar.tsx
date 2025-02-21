@@ -11,12 +11,11 @@ const navItems = [
 	{ name: "HOME", url: "/", icon: Home },
 	{ name: "TRADE", url: "/trade", icon: ChartCandlestick },
 	{ name: "CREATE", url: "/create", icon: Coins },
-	// { name: "Resume", url: "#", icon: FileText },
 ];
 
 export function NavBar() {
-	const [activeTab, setActiveTab] = useState(getCurrentActive(location.pathname) || navItems[0].name);
 	const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState(pathname ? getCurrentActive(pathname) : navItems[0].name);
 
   function getCurrentActive(path: string) {
 

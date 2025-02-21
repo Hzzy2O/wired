@@ -1,3 +1,4 @@
+import { SuiClient } from "@mysten/sui/client";
 import { toHex, isValidSuiObjectId } from "@mysten/sui/utils";
 import baseX from "base-x";
 
@@ -32,3 +33,16 @@ export function getSubdomainAndPath(scope: string): Path | null {
 	}
 	return null;
 }
+
+export const urlToFile = async (url: string): Promise<File> => {
+	try {
+		const response = await fetch(url);
+		const blob = await response.blob();
+
+		const filename = `image_${Date.now()}.${blob.type.split("/")[1]}`;
+		return new File([blob], filename, { type: blob.type });
+	} catch (error) {
+		console.error("Error converting URL to File:", error);
+		throw new Error("Failed to process image");
+	}
+};

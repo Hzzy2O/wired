@@ -10,7 +10,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import LainBtn from "./LainBtn";
-import { CoinMetaData } from "@/types/coin";
+import { CoinMetaData } from "@/types";
 import Result from "./TokenResult";
 import LainInput from "./LainInput";
 

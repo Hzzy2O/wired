@@ -27,3 +27,14 @@ export function formatAddress(address: string) {
 export const formatBalance = (balance: string, precision = 2) => {
 	return (Number.parseInt(balance) / Number(MIST_PER_SUI)).toFixed(precision);
 };
+
+export const formatPrice = (price: number) => {
+  const priceStr = price.toFixed(20);
+  if (priceStr.includes(".")) {
+    const firstNonZero = priceStr.match(/[1-9]/);
+    if (firstNonZero?.index) {
+      return priceStr.slice(0, firstNonZero.index + 4);
+    }
+  }
+  return price.toFixed(2);
+};

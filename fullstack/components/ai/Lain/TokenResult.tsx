@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { coinAtom } from "@/store/createAtom";
-import { CoinMetaData } from "@/types/coin";
+import { CoinMetaData } from "@/types";
 import { useAtom } from "jotai";
 import Image from "next/image";
 

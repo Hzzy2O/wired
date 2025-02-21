@@ -1,4 +1,4 @@
-import { CoinMetaData } from "@/types/coin";
+import { CoinMetaData } from "@/types";
 import { Transaction } from "@mysten/sui/transactions";
 import { bcs, fromHex } from "@mysten/bcs";
 import * as template from "@mysten/move-bytecode-template";

@@ -1,9 +1,8 @@
-module contract::trading_pool {
+module contract::trade_coin {
     use sui::coin::{Self, Coin, TreasuryCap, CoinMetadata};
     use sui::balance::{Self, Balance};
     use sui::event;
     use sui::sui::SUI;
-    use std::string::{Self, String};
     use std::type_name::{Self, TypeName};
     use std::ascii::{String as AString};
 
@@ -17,23 +16,23 @@ module contract::trading_pool {
 
     // ====== Constants ======
     const BASIS_POINTS: u64 = 10000;
-    const DEFAULT_FEE_BPS: u64 = 30; // 0.3%
+    const DEFAULT_FEE_BPS: u64 = 30;
 
     public struct AdminCap has key, store {
         id: object::UID
     }
 
     // ====== Structs ======
-    public struct TradingPool<phantom T> has key {
+    public struct Pool<phantom T> has key {
         id: object::UID,
         sui_reserve: Balance<SUI>,
         token_reserve: Balance<T>,
-        virtual_sui_reserve: u128,    // Virtual SUI reserve
-        virtual_token_reserve: u128,  // Virtual token reserve
-        fee_bps: u64,                // Fee rate
+        virtual_sui_reserve: u128,
+        virtual_token_reserve: u128,
+        fee_bps: u64,
         is_active: bool,
-        max_sui_cap: u64,            // Maximum SUI capacity
-        fee_balance: Balance<SUI>,    // Collected fees
+        max_sui_cap: u64,
+        fee_balance: Balance<SUI>,
     }
 
     // ====== Events ======
@@ -59,7 +58,6 @@ module contract::trading_pool {
     
     // ====== Initialization ======
     fun init(ctx: &mut tx_context::TxContext) {
-        // 创建并转移 AdminCap 给部署者
         transfer::transfer(
             AdminCap { id: object::new(ctx) },
             tx_context::sender(ctx)
@@ -76,15 +74,17 @@ module contract::trading_pool {
         assert!(coin::total_supply(&treasury_cap) == 0, E_INVALID_CREATE);
 
         let initial_token_supply = 1_000_000_000_000_000_000u64;
-        
         let initial_tokens = coin::mint(&mut treasury_cap, initial_token_supply, ctx);
 
-        let pool = TradingPool<T> {
+        let virtual_sui_reserve = 3_000_000_000_000u128; 
+        let virtual_token_reserve = 1_000_000_000_000_000_000u128;
+        
+        let pool = Pool<T> {
             id: object::new(ctx),
-            sui_reserve: balance::zero(),  // Initial SUI reserve is 0
+            sui_reserve: balance::zero(),
             token_reserve: coin::into_balance(initial_tokens),
-            virtual_sui_reserve: (max_sui_cap as u128) * 3 / 8,  // Virtual reserve calculation based on reference implementation
-            virtual_token_reserve: (initial_token_supply as u128) * 11 / 10,  // Add 10% as virtual reserve
+            virtual_sui_reserve,
+            virtual_token_reserve,
             fee_bps: DEFAULT_FEE_BPS,
             is_active: true,
             max_sui_cap,
@@ -107,7 +107,7 @@ module contract::trading_pool {
     }
 
     public entry fun buy<T>(
-        pool: &mut TradingPool<T>,
+        pool: &mut Pool<T>,
         sui_in: Coin<SUI>,
         min_tokens_out: u64,
         ctx: &mut tx_context::TxContext
@@ -152,7 +152,7 @@ module contract::trading_pool {
     }
 
     public entry fun sell<T>(
-        pool: &mut TradingPool<T>,
+        pool: &mut Pool<T>,
         tokens_in: Coin<T>,
         min_sui_out: u64,
         ctx: &mut tx_context::TxContext
@@ -209,7 +209,7 @@ module contract::trading_pool {
     }
 
     public fun get_buy_output_amount<T>(
-        pool: &TradingPool<T>,
+        pool: &Pool<T>,
         sui_amount: u64
     ): u64 {
         calculate_output_amount(
@@ -220,7 +220,7 @@ module contract::trading_pool {
     }
 
     public fun get_sell_output_amount<T>(
-        pool: &TradingPool<T>,
+        pool: &Pool<T>,
         token_amount: u64
     ): u64 {
         calculate_output_amount(
@@ -233,7 +233,7 @@ module contract::trading_pool {
     // ====== Admin ======
     public entry fun collect_fees<T>(
         _admin: &AdminCap,
-        pool: &mut TradingPool<T>,
+        pool: &mut Pool<T>,
         ctx: &mut tx_context::TxContext
     ) {
         let amount = balance::value(&pool.fee_balance);
@@ -245,7 +245,7 @@ module contract::trading_pool {
 
     public entry fun update_fee_bps<T>(
          _admin: &AdminCap,
-        pool: &mut TradingPool<T>,
+        pool: &mut Pool<T>,
         new_fee_bps: u64,
     ) {
         assert!(new_fee_bps <= 1000, E_INVALID_FEE);
