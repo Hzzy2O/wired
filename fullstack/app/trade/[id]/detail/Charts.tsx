@@ -35,11 +35,6 @@ const ChartComponent = ({ coinId }: Props) => {
 				"https://api.binance.com/api/v3/ticker/price?symbol=SUIUSDT",
 			);
 			const { price: sui_price } = await response.json();
-			console.log(
-				events.data.filter(
-					(item) => (item.parsedJson as any).pool_id === coinId,
-				),
-			);
 
 			if (seriesRef.current && events.data.length > 0) {
 				const tradeMap = new Map();
@@ -49,15 +44,29 @@ const ChartComponent = ({ coinId }: Props) => {
 					.reverse()
 					.forEach((event) => {
 						const { timestampMs } = event;
-						const { sui_reserve, token_reserve, is_buy } =
-							event.parsedJson as any;
+						const {
+							sui_reserve,
+							token_reserve,
+							is_buy,
+							output_amount,
+							input_amount,
+						} = event.parsedJson as any;
 
-						const price = (is_buy
-							? Number(sui_reserve) / Number(token_reserve)
-							: Number(token_reserve) / Number(sui_reserve)) * sui_price;
+						const price =
+							(Number(
+								is_buy
+									? Number(sui_reserve) + Number(input_amount)
+									: Number(sui_reserve) - Number(output_amount),
+							) /
+								Number(
+									is_buy
+										? Number(token_reserve) - Number(output_amount)
+										: Number(token_reserve) + Number(input_amount),
+								)) *
+							sui_price;
 
-						const timeKey =
-							Math.floor(Number(timestampMs) / (3600 * 1000)) * 3600;
+						// 改为按分钟分组（60 * 1000 为一分钟）
+						const timeKey = Math.floor(Number(timestampMs) / (60 * 1000)) * 60;
 
 						if (!tradeMap.has(timeKey)) {
 							tradeMap.set(timeKey, {
@@ -124,9 +133,9 @@ const ChartComponent = ({ coinId }: Props) => {
 			timeScale: {
 				borderColor: "#1f2937",
 				timeVisible: true,
-				secondsVisible: false,
-				barSpacing: 20,
-				minBarSpacing: 15,
+				secondsVisible: true, // 显示秒
+				barSpacing: 10, // 减小柱状图间距
+				minBarSpacing: 5,
 				fixLeftEdge: true,
 				fixRightEdge: true,
 				rightOffset: 12,
@@ -137,7 +146,8 @@ const ChartComponent = ({ coinId }: Props) => {
 					const date = new Date(time * 1000);
 					const hours = date.getHours().toString().padStart(2, "0");
 					const minutes = date.getMinutes().toString().padStart(2, "0");
-					return `${hours}:${minutes}`;
+					const seconds = date.getSeconds().toString().padStart(2, "0");
+					return `${hours}:${minutes}:${seconds}`;
 				},
 			},
 			width: chartContainerRef.current.clientWidth,

@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
 		const body = await req.json();
 		const currentMessageContent = body.question ?? "";
 
-		const result = generateCoin(currentMessageContent);
+		const result = await generateCoin(currentMessageContent);
 
 		return NextResponse.json(result, { status: 200 });
 	} catch (e) {
